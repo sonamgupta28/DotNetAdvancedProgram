@@ -14,23 +14,28 @@ namespace Catalog.DataAccessLayer
         {
             _context = context;
         }
-        void IDataRepository<Category>.Add(Category entity)
+        Category IDataRepository<Category>.Add(Category entity)
         {
             _context.Categories.Add(entity);
             _context.SaveChanges();
+            return entity;
         }
 
-        void IDataRepository<Category>.Delete(Category entity)
+        Category IDataRepository<Category>.Delete(int id)
         {
-            _context.Categories.Remove(entity);
-            _context.SaveChanges();
+            var category = _context.Categories
+                      .FirstOrDefault(e => e.CategoryId == id);
+            if (category != null)
+            {
+                _context.Categories.Remove(category);
+                _context.SaveChanges();
+            }
+            return category;
+
         }
 
         Category IDataRepository<Category>.Get(long id)
         {
-            //    return _context.Categories
-            //          .FirstOrDefault(e => e.CategoryId == id);
-            //}
 
             throw new NotImplementedException();
         }
@@ -40,14 +45,22 @@ namespace Catalog.DataAccessLayer
             return _context.Categories.ToList();
         }
 
-        void IDataRepository<Category>.Update(Category dbEntity, Category entity)
+        Category IDataRepository<Category>.Update(int id, Category category)
         {
-            dbEntity.Name = entity.Name;
-            dbEntity.Image = entity.Image;
-            dbEntity.ParentCategory = entity.ParentCategory;
+            var oldCategory = _context.Categories.FirstOrDefault(x => x.CategoryId == id);
+            if (oldCategory != null)
+            {
+                oldCategory.Name = category.Name;
+                oldCategory.Image = category.Image;
+                oldCategory.ParentCategory = category.ParentCategory;
+                _context.Categories.Update(oldCategory);
+                _context.SaveChanges();
+                return category;
+            }
+            return null;
 
-            _context.SaveChanges();
+
         }
-   
+
     }
 }

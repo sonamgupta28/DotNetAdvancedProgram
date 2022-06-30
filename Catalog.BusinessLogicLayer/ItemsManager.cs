@@ -6,19 +6,20 @@ namespace Catalog.BusinessLogicLayer
     public class ItemsManager : IBusinessLayer<Item>
     {
         private readonly IDataRepository<Item> _itemRepository;
+        private const int RecordsPerPage = 5;
 
         public ItemsManager(IDataRepository<Item> itemRepository)
         {
             _itemRepository = itemRepository;
         }
-        public void Add(Item entity)
+        public Item Add(Item entity)
         {
-            _itemRepository.Add(entity);
+            return _itemRepository.Add(entity);
         }
 
-        public void Delete(Item entity)
+        public Item Delete(int id)
         {
-            _itemRepository.Delete(entity);
+            return _itemRepository.Delete(id);
         }
 
         public Item Get(long id)
@@ -37,9 +38,21 @@ namespace Catalog.BusinessLogicLayer
             return items;
         }
 
-        public void Update(Item dbEntity, Item entity)
+        public List<Item> Get(int categoryId, int pageNumber)
         {
-           _itemRepository.Update(dbEntity, entity);
+            var items = _itemRepository.GetAll();
+
+            var filteredItems = items.Where(p => p.Category?.CategoryId == categoryId)
+                                                .Skip((pageNumber - 1) * RecordsPerPage)
+                                                .Take(RecordsPerPage).ToList();
+
+            return (filteredItems);
+        }
+
+
+        public Item Update(int id, Item entity)
+        {
+            return _itemRepository.Update(id, entity);
         }
     }
 }

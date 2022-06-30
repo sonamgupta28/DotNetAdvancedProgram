@@ -10,5 +10,7 @@ namespace CartingService.CartBLL
 
         void AddItemToCart(string cartId, CartItem cartItem);
         void RemoveItemFromCart(string cartId, string itemId);
+
+        Task<Cart> GetCartById(string id);
     }
 }

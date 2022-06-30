@@ -17,6 +17,12 @@ namespace CartingService.CartBLL
         {
             return await _dl.GetAllCartsWithItems();
         }
+
+        public async Task<Cart> GetCartById(string id)
+        {
+            return await _dl.GetCartById(id);
+        }
+
         public async void AddCartWithItems(Cart cart)
         {
             await _dl.AddCartWithItems(cart);
