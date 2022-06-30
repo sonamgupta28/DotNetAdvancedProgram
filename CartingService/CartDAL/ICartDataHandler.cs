@@ -8,6 +8,7 @@ namespace CartingService.CartDAL
         Task AddCartWithItems(Cart c);
 
         Task AddItemToCart(CartItem item, string cartId);
+        Task<Cart> GetCartById(string id);
 
         Task RemoveItemFromCart(string itemId, string cartId);
     }

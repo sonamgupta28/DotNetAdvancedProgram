@@ -1,4 +1,5 @@
 ﻿using Business.Core.Catalog;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,16 +15,24 @@ namespace Catalog.DataAccessLayer
         {
             _context = context;
         }
-        void IDataRepository<Item>.Add(Item entity)
+        Item IDataRepository<Item>.Add(Item entity)
         {
             _context.Items.Add(entity);
             _context.SaveChanges();
+            return entity;
         }
 
-        void IDataRepository<Item>.Delete(Item entity)
+        Item IDataRepository<Item>.Delete(int id)
         {
-            _context.Items.Remove(entity);
-            _context.SaveChanges();
+            var item = _context.Items
+                    .FirstOrDefault(e => e.ItemId == id);
+            if (item != null)
+            {
+                _context.Items.Remove(item);
+                _context.SaveChanges();
+            }
+            return item;
+
         }
 
         Item IDataRepository<Item>.Get(long id)
@@ -34,19 +43,26 @@ namespace Catalog.DataAccessLayer
 
         IEnumerable<Item> IDataRepository<Item>.GetAll()
         {
-            return _context.Items.ToList();
+            return _context.Items.Include(x => x.Category).ToList();
         }
 
-        void IDataRepository<Item>.Update(Item dbEntity, Item entity)
+        Item IDataRepository<Item>.Update(int id, Item item)
         {
-            dbEntity.Name = entity.Name;
-            dbEntity.Image = entity.Image;
-            dbEntity.Description = entity.Description;
-            dbEntity.Category = entity.Category;
-            dbEntity.Price = entity.Price;
-            dbEntity.Amount = entity.Amount;
+            var oldItem = _context.Items.FirstOrDefault(x => x.ItemId == id);
+            if (oldItem != null)
+            {
+                oldItem.Name = item.Name;
+                oldItem.Image = item.Image;
+                oldItem.Description = item.Description;
+                oldItem.Category = item.Category;
+                oldItem.Price = item.Price;
+                oldItem.Amount = item.Amount;
+                _context.Items.Update(oldItem);
+                _context.SaveChanges();
+                return item;
+            }
+            return null;
 
-            _context.SaveChanges();
         }
     }
 }

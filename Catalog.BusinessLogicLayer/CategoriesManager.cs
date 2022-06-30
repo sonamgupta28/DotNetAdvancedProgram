@@ -11,14 +11,14 @@ namespace Catalog.BusinessLogicLayer
         {
             _categoriesRepository = categoriesRepository;
         }
-        public void Add(Category entity)
+        public Category Add(Category entity)
         {
-            _categoriesRepository.Add(entity);
+            return _categoriesRepository.Add(entity);
         }
 
-        public void Delete(Category entity)
+        public Category Delete(int entity)
         {
-            _categoriesRepository.Delete(entity);
+            return _categoriesRepository.Delete(entity);
         }
 
         public Category Get(long id)
@@ -31,15 +31,21 @@ namespace Catalog.BusinessLogicLayer
             return item;
         }
 
+        public List<Category> Get(int id, int pageNumber)
+        {
+            throw new NotImplementedException();
+        }
+
+
         public IEnumerable<Category> GetAll()
         {
             IEnumerable<Category> items = _categoriesRepository.GetAll();
             return items;
         }
 
-        public void Update(Category dbEntity, Category entity)
+        public Category Update(int id, Category entity)
         {
-            _categoriesRepository.Update(dbEntity, entity);
+            return _categoriesRepository.Update(id, entity);
         }
     
     }

@@ -2,6 +2,9 @@ using Business.Core.Configurations;
 using CartingService.CartBLL;
 using CartingService.CartDAL;
 using MongoDB.Driver;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Versioning;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +13,14 @@ builder.Services.Configure<DatabaseSettings>(builder.Configuration.GetSection("D
 builder.Services.AddSingleton<ICartBL, CartBL>();
 builder.Services.AddSingleton<ICartDataHandler, CartDataHandler>();
 builder.Services.AddSingleton<IMongoClient, MongoClient>();
+builder.Services.AddApiVersioning(options =>
+{
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.DefaultApiVersion = new ApiVersion(1, 0);
+    options.ReportApiVersions = true;
+    options.ApiVersionReader = new QueryStringApiVersionReader("version");
+});
+
 builder.Services.AddSingleton((service) =>
 {
     IMongoClient client = new MongoClient(builder.Configuration.GetSection("DatabaseSettings:ConnectionString").Get<string>());

@@ -3,9 +3,11 @@
     public interface IBusinessLayer<TEntity>
     {
         IEnumerable<TEntity> GetAll();
+        List<TEntity> Get(int id, int pageNumber);
         TEntity Get(long id);
-        void Add(TEntity entity);
-        void Update(TEntity dbEntity, TEntity entity);
-        void Delete(TEntity entity);
+        TEntity Add(TEntity entity);
+        TEntity Update(int id, TEntity entity);
+        TEntity Delete(int id);
+
     }
 }

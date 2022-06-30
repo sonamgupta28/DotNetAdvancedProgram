@@ -23,6 +23,12 @@ namespace CartingService.CartDAL
         public async Task<List<Cart>> GetAllCartsWithItems() =>
             await _carts.Find(_ => true).ToListAsync();
 
+        public async Task<Cart> GetCartById(string id)
+        {
+            return await _carts.Find(x => x.Id == id).FirstOrDefaultAsync();
+        }
+
+
         public async Task AddCartWithItems(Cart c)
         {
             await _carts.InsertOneAsync(c);
